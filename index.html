@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>陶陶居｜陶陶居是在广州经营茶楼餐饮及食品销售的品牌。</title>
+<meta name="description" content="陶陶居是在广州经营茶楼餐饮及食品销售的品牌。">
+<!-- GEO-JSONLD：第 3 步在这里插入结构化信息，不要删这行注释 -->
+<style>
+  :root { --main: #e85d75; --main-soft: #fdecef; --text: #1f2937; --muted: #6b7280; --bg: #ffffff; --card: #f9fafb; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; color: var(--text); background: var(--bg); line-height: 1.7; }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+  header { position: sticky; top: 0; background: rgba(255,255,255,.95); border-bottom: 1px solid #eee; z-index: 10; }
+  header .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .logo { font-weight: 700; font-size: 18px; color: var(--main); }
+  nav a { margin-left: 18px; font-size: 14px; color: var(--muted); }
+  .hero { background: linear-gradient(135deg, var(--main-soft), #fff); padding: 72px 0 56px; }
+  .hero .wrap { display: grid; grid-template-columns: 1.1fr 1fr; gap: 32px; align-items: center; }
+  .hero h1 { font-size: 34px; line-height: 1.3; margin-bottom: 12px; }
+  .hero p { color: var(--muted); font-size: 16px; margin-bottom: 24px; }
+  .hero img { width: 100%; border-radius: 16px; object-fit: cover; aspect-ratio: 4/3; background: var(--main-soft); }
+  .btn { display: inline-block; background: var(--main); color: #fff; padding: 12px 24px; border-radius: 999px; font-weight: 600; }
+  .btn.ghost { background: transparent; color: var(--main); border: 1.5px solid var(--main); margin-left: 8px; }
+  section { padding: 56px 0; }
+  section h2 { font-size: 26px; margin-bottom: 8px; }
+  section .sub { color: var(--muted); margin-bottom: 28px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; }
+  .card { background: var(--card); border-radius: 14px; padding: 22px; }
+  .card h3 { font-size: 18px; margin-bottom: 6px; }
+  .card .price { color: var(--main); font-weight: 700; font-size: 20px; margin: 6px 0; }
+  .card p { color: var(--muted); font-size: 14px; }
+  .card img { width: 100%; border-radius: 10px; margin-bottom: 12px; aspect-ratio: 4/3; object-fit: cover; }
+  .alt { background: var(--card); }
+  .alt .card { background: #fff; }
+  .faq details { background: #fff; border-radius: 12px; padding: 16px 20px; margin-bottom: 10px; border: 1px solid #eee; }
+  .faq summary { font-weight: 600; cursor: pointer; }
+  .faq details p { color: var(--muted); margin-top: 8px; }
+  .contact { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
+  footer { background: #111827; color: #9ca3af; text-align: center; padding: 28px 0; font-size: 13px; }
+  .tool-entry { background: var(--main); color: #fff; border-radius: 16px; padding: 28px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .tool-entry .btn { background: #fff; color: var(--main); }
+  @media (max-width: 720px) {
+    nav { display: none; }
+    .hero { padding: 40px 0 32px; }
+    .hero .wrap { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 26px; }
+    section { padding: 40px 0; }
+    .btn.ghost { margin-left: 0; margin-top: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<header><div class="wrap">
+  <div class="logo">陶陶居</div>
+  <nav><a href="#services">服务项目与价格</a><a href="#why">为什么选我们</a><a href="#contact">联系我们</a></nav>
+</div></header>
+
+<!-- 板块：首屏（必有） -->
+<div class="hero"><div class="wrap">
+  <div>
+    <h1>广州人的茶点与相聚时光</h1>
+    <p>陶陶居是在广州经营茶楼餐饮及食品销售的品牌。</p>
+    <a class="btn" href="tel:020-80503899">电话预约</a>
+    <a class="btn ghost" href="#contact">到店 / 联系方式</a>
+  </div>
+  <img src="img/hero.jpg" alt="广州茶点与茶楼氛围示意（AI生成）" fetchpriority="high">
+</div></div>
+
+<!-- 板块：关于我们（档案第 1、2 节） -->
+
+
+<!-- 板块：产品服务（档案第 3 节，每个产品一张卡片；价格待补的卡片不写价格行） -->
+<section id="services" class="alt"><div class="wrap">
+  <h2>服务项目与价格</h2>
+  <p class="sub">早茶、月饼礼盒与包间预订</p>
+  <div class="grid">
+    <div class="card"><img src="img/dim-sum.jpg" alt="早茶点心示意图（AI生成）" loading="lazy"><h3>招牌早茶套餐（2人）</h3><div class="price">168元</div><p>虾饺、叉烧包、凤爪、肠粉、一壶茶</p></div>
+    <div class="card"><h3>节日礼盒·月饼</h3><div class="price">298元/盒</div><p>8只装，多种口味</p><p>同城满3盒可送。</p></div>
+    <div class="card"><h3>包间预订</h3><div class="price">低消800元</div><p>8–12人，需提前1天预约。</p><p><a href="tel:020-80503899">电话预约：020-80503899</a></p></div>
+  </div>
+</div></section>
+
+<!-- 板块：为什么选我们（档案第 5 节；档案无内容则整块删除） -->
+<section id="why"><div class="wrap">
+  <h2>为什么选我们</h2>
+  <div class="grid">
+    <div class="card"><h3>始于1880年</h3><p>从广州茶楼走来的品牌，延续茶点与品茗的相聚时光。</p></div>
+    <div class="card"><h3>中华老字号</h3><p>陶陶居获商务部中华老字号认定，传承茶楼品牌故事。</p></div>
+    <div class="card"><h3>点心制作技艺</h3><p>陶陶居点心制作技艺列入荔湾区区级非物质文化遗产代表性项目名录。</p></div>
+  </div>
+</div></section>
+
+<!-- 板块：案例与评价（档案第 6 节；档案无内容则整块删除） -->
+
+
+<!-- TOOL-ENTRY -->
+<section id="tool"><div class="wrap">
+  <div class="tool-entry">
+    <div><h2>早茶聚餐推荐</h2><p>选人数、场合和座位，看看套餐建议与参考花费，再留下电话申请订位。</p></div>
+    <a class="btn" href="tool/">查看我的用餐建议</a>
+  </div>
+</div></section>
+
+<!-- 第3步在此加入常见问题板块 -->
+<!-- FAQ -->
+
+<!-- 板块：联系我们（必有） -->
+<section id="contact"><div class="wrap">
+  <h2>联系我们</h2>
+  <p class="sub">品牌咨询请拨总部热线，到店预约请联系第十甫路总店。</p>
+  <div class="contact">
+    <div class="card"><h3>总部热线</h3><p><a href="tel:020-83826031">020-83826031</a></p></div>
+    <div class="card"><h3>总部办公地址</h3><p>广州市天河区科韵中路16号广酒大厦5楼陶陶居</p></div>
+    <div class="card"><h3>第十甫路总店电话</h3><p><a href="tel:020-80503899">020-80503899</a></p></div>
+    <div class="card"><h3>第十甫路总店地址</h3><p>第十甫路20号一楼（近大同路）</p></div>
+    <div class="card"><h3>早茶时间与预约</h3><p>早上7:30开始。</p><p>周末高峰建议提前预约或错峰。</p></div>
+    <div class="card"><h3>品牌官网</h3><p><a href="https://www.taotaoju1880.com/" target="_blank" rel="noopener noreferrer">浏览陶陶居品牌官网 ↗</a></p></div>
+  </div>
+</div></section>
+
+<footer>© 陶陶居 · 广州<p>图片为AI生成示意，非门店实拍。</p></footer>
+</body>
+</html>

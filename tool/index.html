@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>早茶聚餐推荐｜陶陶居</title>
+<style>
+  :root { --main: #e85d75; --main-soft: #fdecef; --text: #1f2937; --muted: #6b7280; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; color: var(--text); background: var(--main-soft); min-height: 100vh; display: flex; justify-content: center; padding: 20px 14px; }
+  .app { width: 100%; max-width: 440px; background: #fff; border-radius: 20px; padding: 26px 22px; box-shadow: 0 8px 30px rgba(0,0,0,.06); }
+  .brand { font-size: 13px; color: var(--muted); }
+  h1 { font-size: 24px; margin: 6px 0 6px; }
+  .lead { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
+  .progress { height: 6px; background: #f1f1f1; border-radius: 99px; margin-bottom: 18px; overflow: hidden; }
+  .progress i { display: block; height: 100%; width: 0; background: var(--main); transition: width .3s; }
+  .q { font-weight: 600; margin-bottom: 12px; font-size: 17px; }
+  .opt { display: block; width: 100%; text-align: left; padding: 13px 14px; margin-bottom: 10px; border: 1.5px solid #e5e7eb; border-radius: 12px; background: #fff; font-size: 15px; cursor: pointer; }
+  .opt:hover, .opt.on { border-color: var(--main); background: var(--main-soft); }
+  input.field { width: 100%; padding: 13px 14px; border: 1.5px solid #e5e7eb; border-radius: 12px; font-size: 15px; margin-bottom: 12px; }
+  .btn { display: block; width: 100%; text-align: center; padding: 14px; border-radius: 999px; border: none; background: var(--main); color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; text-decoration: none; }
+  .btn.ghost { background: #fff; color: var(--main); border: 1.5px solid var(--main); margin-top: 10px; }
+  .result h2 { font-size: 22px; margin-bottom: 8px; color: var(--main); }
+  .result p { color: #374151; line-height: 1.75; margin-bottom: 12px; }
+  .result img { width: 100%; border-radius: 14px; margin-bottom: 12px; }
+  textarea.summary { display: block; width: 100%; min-height: 190px; margin-top: 8px; padding: 12px; border: 1.5px solid #e5e7eb; border-radius: 12px; background: var(--main-soft); color: var(--text); font: inherit; font-size: 14px; line-height: 1.65; resize: vertical; }
+  .tip { font-size: 12px; color: var(--muted); margin: 10px 0 16px; }
+  .hide { display: none; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brand">陶陶居 · 广州人的茶点与相聚时光</div>
+  <h1>早茶聚餐推荐</h1>
+  <p class="lead">选人数、场合和座位，看看套餐或包间建议、参考花费，再留电话申请预约。</p>
+
+  <div id="quiz">
+    <div class="progress"><i id="bar"></i></div>
+    <div id="step" aria-live="polite"></div>
+  </div>
+
+  <div id="result" class="result hide" aria-live="polite">
+    <img id="r-img" class="hide" alt="">
+    <p id="r-img-note" class="tip hide">AI生成茶点示意图</p>
+    <h2 id="r-title"></h2>
+    <p id="r-text"></p>
+    <p id="r-rec"></p>
+    <label class="q" for="r-summary">用餐信息（供复制）</label>
+    <textarea class="summary" id="r-summary" readonly rows="8"></textarea>
+    <button class="btn ghost" type="button" onclick="copySummary()">复制用餐信息</button>
+    <p class="tip" id="copy-status" role="status"></p>
+    <p class="tip">复制后，在表单的“您想了解什么？”中粘贴并补充到店时间，来源选“小工具”；填写称呼与电话，等待门店确认。</p>
+    <p class="tip">以实际报价为准。提交预约需求后，请等待门店联系确认；此时尚未完成订位。</p>
+    <a class="btn" id="cta" href="https://congmingpay.feishu.cn/share/base/shrcn1IeBPfafR4McVxznSlMPue" target="_blank" rel="noopener noreferrer">提交订位需求</a>
+    <p class="tip">预约表单将在新窗口打开。</p>
+    <p>第十甫路总店<br>第十甫路20号一楼（近大同路）<br>门店电话：<a href="tel:02080503899">020-80503899</a></p>
+    <a class="btn ghost" href="tel:02080503899">致电总店确认</a>
+    <button class="btn ghost" type="button" onclick="restart()">重新选一次</button>
+  </div>
+</div>
+
+<script>
+// 本页只需完成三道单选；表单里填写称呼、电话，并粘贴用餐信息、补充到店时间。
+const QUESTIONS = [
+  { id: "people", type: "choice", title: "几个人用餐？", options: ["1人", "2人", "3人", "4人", "5人", "6人", "7人", "8人", "9人", "10人", "11人", "12人", "13人及以上"] },
+  { id: "occasion", type: "choice", title: "什么场合？", options: ["来广州喝早茶", "亲友聚餐", "生日聚餐", "商务聚餐"] },
+  { id: "seating", type: "choice", title: "想坐哪里？", options: ["大厅", "包间", "都可以"] }
+];
+
+// 固定规则来自说明书及企业档案。此函数仅依赖输入，不读取页面或调用外部服务。
+function computeResult(answers) {
+  if (!answers || QUESTIONS.some(q => !q.options.includes(answers[q.id]))) {
+    return { kind: "incomplete", title: "请补全用餐选择", text: "请先选好人数、场合和座位，再查看推荐。", rec: "", img: "", imgAlt: "", cta: "" };
+  }
+  const { people, occasion, seating } = answers;
+  const count = people === "13人及以上" ? 13 : Number.parseInt(people, 10);
+  const summary = `本次共${people}，计划${occasion}，座位选择${seating}。`;
+  const manual = (text, rec) => ({ kind: "manual", count, title: "为你确认聚餐安排", text: summary + text, rec, img: "", imgAlt: "", cta: "留电话，请门店确认" });
+
+  // 1. 人数超出已有包间规则，先由门店确认，不推算套餐或包间报价。
+  if (count >= 13) {
+    return manual("建议先让门店确认人数、场地和菜单。", "推荐：电话确认聚餐安排。可否接待、菜品及费用以实际报价为准；是否有位需门店确认。");
+  }
+  // 2. 少于8人选包间，不套用800元低消，也不认定门店不能安排。
+  if (seating === "包间" && count < 8) {
+    return manual("已知包间适用8–12人；少于8人能否安排及费用，需门店确认。", "推荐：先联系总店确认包间安排，以实际报价为准。包间需提前1天电话预约；如果时间不足，请直接致电确认。");
+  }
+  // 3. 8–12人明确选包间，或聚餐且座位都可以，优先建议申请包间。
+  if (count >= 8 && (seating === "包间" || (seating === "都可以" && occasion !== "来广州喝早茶"))) {
+    return {
+      kind: "room", count, minimumSpend: 800,
+      title: "你的包间聚餐建议",
+      text: summary + "建议申请包间预约。最低消费800元；以实际报价为准。最低消费不是固定总价，也不是包含菜品的套餐价。",
+      rec: "推荐：包间预订，适用8–12人。需提前1天电话预约；实际菜品、总费用及有无包间由门店确认。如果无法提前1天预约，请直接致电总店确认。",
+      img: "", imgAlt: "", cta: "申请包间预约"
+    };
+  }
+  // 4. 大厅或座位都可以的早茶，按2人一份向上取整，奇数不拆份。
+  if (occasion === "来广州喝早茶" && (seating === "大厅" || seating === "都可以")) {
+    const packages = Math.ceil(count / 2);
+    const budget = packages * 168;
+    return {
+      kind: "tea", count, packages, budget,
+      title: "你的早茶套餐建议",
+      text: summary + `按每2人一份估算，建议参考${packages}份招牌早茶套餐，参考金额合计${budget}元。份量、额外点单及费用以实际报价为准；是否有位需门店确认。`,
+      rec: `推荐：招牌早茶套餐（2人），168元/份，共${packages}份。每份含虾饺、叉烧包、凤爪、肠粉、一壶茶。早茶7:30开始；周末高峰建议提前预约或错峰。`,
+      img: "img/dim-sum.jpg", imgAlt: "AI生成的茶点示意图", cta: "提交订位需求"
+    };
+  }
+  // 5. 未有确认菜单的其他聚餐，由门店确认，不把早茶价当作正餐报价。
+  return manual("建议让门店按人数和场合确认聚餐菜单。", "推荐：电话确认聚餐菜单。菜品、费用及座位由门店确认，以实际报价为准。");
+}
+
+function buildResultSummary(answers, result) {
+  if (!result || result.kind === "incomplete") return "";
+  let recommendation = result.rec.replace(/^推荐：/, "");
+  let cost = "费用：待门店确认";
+  if (result.kind === "tea") {
+    recommendation = `招牌早茶套餐（2人）${result.packages}份，168元/份`;
+    cost = `参考预算：${result.budget}元（按每2人一份向上取整；份量、额外点单及费用需门店确认）`;
+  } else if (result.kind === "room") {
+    recommendation = "包间预订（8–12人，需提前1天电话预约）";
+    cost = `最低消费：${result.minimumSpend}元（不是固定总价，也不是包含菜品的套餐价；实际总费用待门店确认）`;
+  }
+  return [
+    "门店：陶陶居·第十甫路总店",
+    `人数：${answers.people}`,
+    `场合：${answers.occasion}`,
+    `座位：${answers.seating}`,
+    `推荐：${recommendation}`,
+    cost,
+    "预计到店日期及时间：请补充",
+    "以实际报价为准。以上为预约需求，等待门店确认。"
+  ].join("\n");
+}
+
+async function copySummary() {
+  const field = document.getElementById("r-summary");
+  const status = document.getElementById("copy-status");
+  const value = field.value;
+  if (!value) { status.textContent = "请先完成用餐选择。"; return; }
+  try {
+    if (!navigator.clipboard || !navigator.clipboard.writeText) throw new Error("请手动复制");
+    await navigator.clipboard.writeText(value);
+    if (field.value === value) status.textContent = "用餐信息已复制。请到表单粘贴，并补充到店时间。";
+  } catch {
+    if (field.value !== value) return;
+    field.focus(); field.select(); field.setSelectionRange(0, value.length);
+    status.textContent = "请复制已选中的用餐信息：电脑按 Ctrl+C，手机长按后选择“复制”。";
+  }
+}
+
+let i = 0; const answers = {};
+const stepEl = document.getElementById("step");
+function render() {
+  document.getElementById("bar").style.width = (i / QUESTIONS.length * 100) + "%";
+  const q = QUESTIONS[i];
+  if (q.type === "choice") {
+    stepEl.innerHTML = `<div class="q">第${i + 1} / ${QUESTIONS.length}题 · ${q.title}</div>` +
+      q.options.map(o => `<button type="button" class="opt" data-v="${o}">${o}</button>`).join("");
+    stepEl.querySelectorAll(".opt").forEach(b => b.onclick = () => { answers[q.id] = b.dataset.v; next(); });
+  } else {
+    stepEl.innerHTML = `<div class="q">${q.title}</div><input class="field" id="inp" placeholder="${q.placeholder || ""}"><button class="btn" id="go">下一步</button>`;
+    document.getElementById("go").onclick = () => { answers[q.id] = document.getElementById("inp").value.trim(); next(); };
+  }
+}
+function next() { i++; if (i < QUESTIONS.length) { render(); window.scrollTo(0, 0); } else show(); }
+function show() {
+  const r = computeResult(answers);
+  if (r.kind === "incomplete") {
+    document.getElementById("r-summary").value = "";
+    document.getElementById("copy-status").textContent = "";
+    stepEl.innerHTML = `<div class="q">${r.title}</div><p class="tip">${r.text}</p><button class="btn" type="button" onclick="restart()">重新选择</button>`;
+    return;
+  }
+  document.getElementById("bar").style.width = "100%";
+  document.getElementById("quiz").classList.add("hide");
+  document.getElementById("result").classList.remove("hide");
+  document.getElementById("r-title").textContent = r.title;
+  document.getElementById("r-text").textContent = r.text;
+  document.getElementById("r-rec").textContent = r.rec || "";
+  document.getElementById("cta").textContent = r.cta;
+  document.getElementById("r-summary").value = buildResultSummary(answers, r);
+  document.getElementById("copy-status").textContent = "";
+  const img = document.getElementById("r-img");
+  const imgNote = document.getElementById("r-img-note");
+  if (r.img) {
+    img.src = r.img; img.alt = r.imgAlt; img.classList.remove("hide"); imgNote.classList.remove("hide");
+  } else {
+    img.removeAttribute("src"); img.alt = ""; img.classList.add("hide"); imgNote.classList.add("hide");
+  }
+  window.scrollTo(0, 0);
+}
+function restart() { i = 0; for (const k in answers) delete answers[k];
+  document.getElementById("r-summary").value = ""; document.getElementById("copy-status").textContent = "";
+  document.getElementById("quiz").classList.remove("hide"); document.getElementById("result").classList.add("hide"); render(); window.scrollTo(0, 0); }
+render();
+</script>
+</body>
+</html>

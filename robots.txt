@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://finderchangchang.github.io/ai-camp-test-gui/sitemap.xml
